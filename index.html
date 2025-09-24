@@ -53,6 +53,11 @@
                 <button id="reset-btn">🔄 Reset Round</button>
                 <button id="heatmap-btn">📊 Progress Heatmap</button>
             </div>
+            <div class="control-row data-controls">
+                <button id="export-csv-btn">📄 Export CSV</button>
+                <button id="export-json-btn">📊 Export JSON</button>
+                <button id="reset-fsrs-btn">🗑️ Reset FSRS Data</button>
+            </div>
             <div class="control-row secondary-controls">
                 <select id="grid-size-select" class="grid-selector">
                     <option value="2x2">2×2</option>
@@ -81,7 +86,8 @@
     <script src="js/data-manager.js"></script>
     <script src="js/ui-manager.js"></script>
     <script src="js/game-engine.js"></script>
-    <script src="js/adaptive-learning-client.js"></script>
+    <script type="module" src="js/fsrs-engine.js"></script>
+    <script type="module" src="js/adaptive-learning-client.js"></script>
     <script src="js/heatmap-visualizer.js"></script>
     <script src="js/main.js"></script>
 </body>

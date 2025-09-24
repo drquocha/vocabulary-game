@@ -30,6 +30,39 @@
     gap: 20px;
 }
 
+/* Data controls specific styling */
+.data-controls {
+    gap: 8px;
+}
+
+.data-controls button {
+    font-size: 0.8em;
+    padding: 6px 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.data-controls button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.data-controls button:active {
+    transform: translateY(0);
+}
+
+#reset-fsrs-btn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+}
+
+#reset-fsrs-btn:hover {
+    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+}
+
 /* Grid selector styling */
 .grid-selector {
     background: rgba(255, 255, 255, 0.9);

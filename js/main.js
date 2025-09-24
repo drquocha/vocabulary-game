@@ -26,6 +26,11 @@ class VocabularyGame {
         this.uiManager.fontSizeDecreaseBtn.addEventListener('click', () => this.uiManager.decreaseFontSize());
         this.uiManager.heatmapBtn.addEventListener('click', () => this.showHeatmap());
         this.uiManager.onGridSizeChange(() => this.onGridSizeChange());
+
+        // Add FSRS data export listeners
+        document.getElementById('export-csv-btn').addEventListener('click', () => this.exportCSVData());
+        document.getElementById('export-json-btn').addEventListener('click', () => this.exportJSONData());
+        document.getElementById('reset-fsrs-btn').addEventListener('click', () => this.resetFSRSData());
     }
 
     async initializeGame() {
@@ -330,6 +335,49 @@ class VocabularyGame {
                 await this.heatmapVisualizer.show(this.learningClient, this.dataManager);
             } catch (error) {
                 console.warn('Failed to update heatmap:', error);
+            }
+        }
+    }
+
+    // FSRS Data Export Methods
+    exportCSVData() {
+        try {
+            this.learningClient.downloadCSV();
+            this.uiManager.showFeedback('📄 CSV data exported successfully!', 'success');
+            setTimeout(() => this.uiManager.hideFeedback(), 3000);
+        } catch (error) {
+            console.error('Failed to export CSV:', error);
+            this.uiManager.showFeedback('❌ Failed to export CSV data', 'error');
+            setTimeout(() => this.uiManager.hideFeedback(), 3000);
+        }
+    }
+
+    exportJSONData() {
+        try {
+            this.learningClient.downloadJSON();
+            this.uiManager.showFeedback('📊 JSON data exported successfully!', 'success');
+            setTimeout(() => this.uiManager.hideFeedback(), 3000);
+        } catch (error) {
+            console.error('Failed to export JSON:', error);
+            this.uiManager.showFeedback('❌ Failed to export JSON data', 'error');
+            setTimeout(() => this.uiManager.hideFeedback(), 3000);
+        }
+    }
+
+    resetFSRSData() {
+        if (confirm('⚠️ Are you sure you want to reset all FSRS learning data? This action cannot be undone!')) {
+            try {
+                this.learningClient.resetFSRSData();
+                this.uiManager.showFeedback('🗑️ FSRS data reset successfully!', 'info');
+                setTimeout(() => {
+                    this.uiManager.hideFeedback();
+                    // Restart the game to reflect the reset
+                    this.startNewGame();
+                }, 2000);
+            } catch (error) {
+                console.error('Failed to reset FSRS data:', error);
+                this.uiManager.showFeedback('❌ Failed to reset FSRS data', 'error');
+                setTimeout(() => this.uiManager.hideFeedback(), 3000);
             }
         }
     }

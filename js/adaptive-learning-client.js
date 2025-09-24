@@ -1,3 +1,5 @@
+import { FSRSEngine } from './fsrs-engine.js';
+
 class AdaptiveLearningClient {
     constructor(apiBaseUrl = 'http://localhost:8000/api') {
         this.apiBaseUrl = apiBaseUrl;
@@ -5,6 +7,9 @@ class AdaptiveLearningClient {
         this.userId = this.getUserId();
         this.isConnected = false;
         this.fallbackMode = false;
+
+        // Initialize FSRS engine for offline intelligent learning
+        this.fsrsEngine = new FSRSEngine();
 
         // Check API connection
         this.checkConnection();
@@ -65,10 +70,14 @@ class AdaptiveLearningClient {
     async startSession(sessionLength = 15) {
         if (this.fallbackMode) {
             this.currentSessionId = `fallback_${Date.now()}`;
+            const storedVocab = this.getStoredVocabulary();
+            const selectedWords = this.fsrsEngine.selectWordsForSession(storedVocab, sessionLength);
+
             return {
-                words: this.getFallbackWords(),
+                words: selectedWords.map(w => w.concept),
                 session_id: this.currentSessionId,
-                recommended_difficulty: 5.0
+                recommended_difficulty: selectedWords.reduce((sum, w) => sum + w.difficulty, 0) / selectedWords.length,
+                fsrs_selection: true
             };
         }
 
@@ -101,8 +110,22 @@ class AdaptiveLearningClient {
         // Always record locally for immediate feedback
         this.recordLocalResponse(wordId, isCorrect, responseTimeMs, usedHint);
 
+        // Update FSRS engine (works both online and offline)
+        const updatedWordState = this.fsrsEngine.updateWordState(wordId, isCorrect, responseTimeMs, usedHint);
+        console.log('🧠 FSRS Updated:', wordId, 'New Priority:', updatedWordState.priority.toFixed(2));
+
         if (this.fallbackMode) {
-            return { status: 'success', message: 'Recorded locally' };
+            return {
+                status: 'success',
+                message: 'Recorded with FSRS',
+                fsrs_data: {
+                    stability: updatedWordState.stability,
+                    difficulty: updatedWordState.difficulty,
+                    retrievability: updatedWordState.retrievability,
+                    priority: updatedWordState.priority,
+                    state: updatedWordState.state
+                }
+            };
         }
 
         try {
@@ -222,50 +245,63 @@ class AdaptiveLearningClient {
 
     getFallbackAnalytics() {
         const localStats = this.getLocalStats();
+        const fsrsAnalytics = this.fsrsEngine.getAnalytics();
+
         return {
             user_state: {
                 user_id: this.userId,
                 ability_theta: 0.0,
                 sessions_count: localStats.sessions || 0,
-                avg_session_accuracy: localStats.accuracy || 0.0
+                avg_session_accuracy: fsrsAnalytics.averageAccuracy || 0.0
             },
             word_statistics: {
-                total_words: localStats.totalWords || 0,
-                average_accuracy: localStats.accuracy || 0.0
+                total_words: fsrsAnalytics.totalWords,
+                new_words: fsrsAnalytics.newWords,
+                learning_words: fsrsAnalytics.learningWords,
+                review_words: fsrsAnalytics.reviewWords,
+                mastered_words: fsrsAnalytics.masteredWords,
+                average_accuracy: fsrsAnalytics.averageAccuracy,
+                total_reviews: fsrsAnalytics.totalReviews
             },
             recent_sessions: localStats.recentSessions || [],
             recommendations: [
-                "📡 Reconnect to internet for personalized learning",
+                `📚 ${fsrsAnalytics.newWords} new words ready to learn`,
+                `🔄 ${fsrsAnalytics.reviewWords} words due for review`,
+                `⭐ ${fsrsAnalytics.masteredWords} words mastered`,
+                "🧠 Using FSRS algorithm for optimal learning",
                 "💾 Your progress is saved locally"
             ]
         };
     }
 
     getFallbackWordStates() {
-        const localStats = this.getLocalStats();
-        const wordData = localStats.wordData || {};
         const storedVocab = this.getStoredVocabulary();
 
-        console.log('🔍 Heatmap Debug - Local Stats:', localStats);
-        console.log('🔍 Heatmap Debug - Word Data Keys:', Object.keys(wordData));
-        console.log('🔍 Heatmap Debug - Stored Vocab Count:', storedVocab.length);
+        console.log('🔍 FSRS Heatmap Debug - Using FSRS Engine Data');
 
         return {
             words: storedVocab.map(item => {
-                const data = wordData[item.concept] || { total: 0, correct: 0, avgRt: 0 };
-                const accuracy = data.total > 0 ? (data.correct / data.total) : 0;
+                const wordState = this.fsrsEngine.getWordState(item.concept);
+                const accuracy = wordState.repsTotal > 0 ? (wordState.repsCorrect / wordState.repsTotal) : 0;
 
                 return {
                     word_id: item.concept,
                     concept: item.concept,
                     definition: item.definition,
-                    attempts: data.total,
-                    correct_attempts: data.correct,
+                    attempts: wordState.repsTotal,
+                    correct_attempts: wordState.repsCorrect,
                     accuracy: accuracy,
-                    average_response_time: data.avgRt,
-                    hints_used: data.hintsUsed || 0,
-                    difficulty: this.estimateDifficulty(accuracy, data.total),
-                    last_seen: data.lastSeen || null
+                    average_response_time: wordState.avgResponseTime,
+                    hints_used: wordState.hintUsedCount,
+                    difficulty: wordState.difficulty,
+                    stability: wordState.stability,
+                    retrievability: wordState.retrievability,
+                    state: wordState.state,
+                    priority: wordState.priority,
+                    streak_correct: wordState.streakCorrect,
+                    lapse_count: wordState.lapseCount,
+                    next_due: wordState.nextDueTime,
+                    last_seen: wordState.lastReviewTime
                 };
             })
         };
@@ -406,30 +442,78 @@ class AdaptiveLearningClient {
         return !this.fallbackMode && this.isConnected;
     }
 
+    // Export FSRS data for analysis
+    exportFSRSData() {
+        return this.fsrsEngine.exportData();
+    }
+
+    // Download CSV data
+    downloadCSV() {
+        this.fsrsEngine.dataLogger.downloadCSV();
+    }
+
+    // Download JSON data
+    downloadJSON() {
+        this.fsrsEngine.dataLogger.downloadJSON();
+    }
+
+    // Reset all FSRS data (for testing)
+    resetFSRSData() {
+        this.fsrsEngine.resetData();
+    }
+
     // Get learning insights for UI
     getLearningInsights() {
         const stats = this.getLocalStats();
+        const fsrsAnalytics = this.fsrsEngine.getAnalytics();
         const insights = [];
 
-        if (stats.accuracy) {
-            if (stats.accuracy > 0.9) {
+        // FSRS-based insights
+        if (fsrsAnalytics.averageAccuracy > 0) {
+            if (fsrsAnalytics.averageAccuracy > 0.9) {
                 insights.push({
                     type: 'success',
-                    message: `🎯 Excellent accuracy: ${(stats.accuracy * 100).toFixed(1)}%`
+                    message: `🎯 Excellent accuracy: ${(fsrsAnalytics.averageAccuracy * 100).toFixed(1)}%`
                 });
-            } else if (stats.accuracy < 0.6) {
+            } else if (fsrsAnalytics.averageAccuracy < 0.6) {
                 insights.push({
                     type: 'warning',
-                    message: `📈 Focus on improvement: ${(stats.accuracy * 100).toFixed(1)}% accuracy`
+                    message: `📈 Focus on improvement: ${(fsrsAnalytics.averageAccuracy * 100).toFixed(1)}% accuracy`
+                });
+            } else {
+                insights.push({
+                    type: 'info',
+                    message: `📊 Current accuracy: ${(fsrsAnalytics.averageAccuracy * 100).toFixed(1)}%`
                 });
             }
         }
 
-        if (stats.totalResponses) {
-            const sessionsCount = Math.ceil(stats.totalResponses / 15);
+        if (fsrsAnalytics.totalReviews > 0) {
             insights.push({
                 type: 'info',
-                message: `📚 ${stats.totalResponses} words practiced across ${sessionsCount} sessions`
+                message: `📚 ${fsrsAnalytics.totalReviews} reviews completed`
+            });
+        }
+
+        // Learning progress insights
+        if (fsrsAnalytics.masteredWords > 0) {
+            insights.push({
+                type: 'success',
+                message: `⭐ ${fsrsAnalytics.masteredWords} words mastered`
+            });
+        }
+
+        if (fsrsAnalytics.newWords > 0) {
+            insights.push({
+                type: 'info',
+                message: `🆕 ${fsrsAnalytics.newWords} new words to learn`
+            });
+        }
+
+        if (fsrsAnalytics.reviewWords > 0) {
+            insights.push({
+                type: 'warning',
+                message: `🔄 ${fsrsAnalytics.reviewWords} words due for review`
             });
         }
 
