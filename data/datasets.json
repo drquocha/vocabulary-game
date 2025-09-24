@@ -1,0 +1,10 @@
+{
+  "datasets": [
+    "pali.csv",
+    "sample_vocabulary.csv",
+    "test_colors.csv",
+    "words.csv"
+  ],
+  "last_updated": "auto-generated",
+  "total_datasets": 4
+}
