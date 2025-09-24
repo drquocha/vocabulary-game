@@ -2,6 +2,103 @@
    MOBILE LANDSCAPE OPTIMIZATION
    ========================================================================== */
 
+/* iPhone 13/14/15 Landscape Specific (390px height) */
+@media screen and (max-height: 410px) and (min-width: 800px) and (orientation: landscape) {
+    .container {
+        padding: 6px;
+        min-height: auto;
+        max-width: 100%;
+    }
+
+    .game-area {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 8px;
+        margin-bottom: 8px;
+        min-height: auto;
+        height: calc(100vh - 120px);
+    }
+
+    .panel {
+        flex: 1 !important;
+        width: calc(50% - 4px) !important;
+        max-width: calc(50% - 4px) !important;
+        height: 100%;
+        overflow: hidden;
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    .items-list {
+        height: calc(100% - 40px);
+        max-height: none;
+        overflow-y: auto;
+        gap: 4px;
+    }
+
+    .panel h2 {
+        font-size: 1em;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    header {
+        padding: 4px 8px;
+        margin-bottom: 6px;
+    }
+
+    .controls {
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    button:not(.font-btn) {
+        padding: 4px 8px;
+        font-size: 0.8em;
+    }
+
+    .item {
+        padding: 6px;
+        font-size: 0.75em;
+        min-height: 40px;
+        border-radius: 6px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        word-wrap: break-word;
+        hyphens: auto;
+    }
+
+    /* Adjust grid layouts for landscape */
+    .items-list.grid-3x3 {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(5, minmax(35px, 1fr));
+    }
+
+    .items-list.grid-3x4 {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(5, minmax(32px, 1fr));
+    }
+
+    .items-list.grid-4x3 {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, minmax(35px, 1fr));
+    }
+
+    .items-list.grid-4x4 {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, minmax(32px, 1fr));
+    }
+
+    .items-list.grid-5x3 {
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(3, minmax(40px, 1fr));
+    }
+}
+
 /* Mobile Landscape Optimization */
 @media screen and (max-height: 500px) and (orientation: landscape) {
     .container {
@@ -53,11 +150,18 @@
         gap: 8px;
         margin-bottom: 8px;
         min-height: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
     }
 
     .panel {
         padding: 8px;
         border-radius: 10px;
+        flex: 1;
+        width: calc(50% - 4px);
+        max-width: calc(50% - 4px);
     }
 
     .panel h2 {
@@ -186,10 +290,17 @@
     .game-area {
         gap: 6px;
         margin-bottom: 6px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
     }
 
     .panel {
         padding: 6px;
+        flex: 1;
+        width: calc(50% - 3px);
+        max-width: calc(50% - 3px);
     }
 
     .panel h2 {
