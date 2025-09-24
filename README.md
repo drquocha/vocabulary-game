@@ -2,9 +2,11 @@
 
 > **An immersive, modern web-based vocabulary learning game that transforms education into an engaging interactive experience**
 
-[![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com)
+[![Version](https://img.shields.io/badge/version-3.0-blue.svg)](https://github.com)
 [![License](https://img.shields.io/badge/license-Educational-green.svg)](https://github.com)
 [![Browser Support](https://img.shields.io/badge/browsers-Chrome%20%7C%20Firefox%20%7C%20Safari%20%7C%20Edge-brightgreen.svg)](https://github.com)
+[![Mobile Optimized](https://img.shields.io/badge/mobile-optimized-success.svg)](https://github.com)
+[![Architecture](https://img.shields.io/badge/architecture-modular-orange.svg)](https://github.com)
 
 ## 🌟 What is This Game?
 
@@ -40,23 +42,28 @@ This game is built on proven learning principles:
 
 ## ✨ Key Features
 
-### 🎨 **Modern Design**
+### 🎨 **Professional Design & Architecture**
+- **Modular CSS Architecture**: 8 separate CSS modules for maintainability
 - **Glassmorphism UI**: Stunning frosted glass effects with dynamic backgrounds
-- **Smooth Animations**: 60fps transitions and micro-interactions
-- **Responsive Layout**: Perfect experience on desktop, tablet, and mobile
-- **Accessibility First**: Full keyboard navigation and screen reader support
+- **Mobile-First Responsive**: Perfect on phones (portrait/landscape), tablets, desktops
+- **Professional Code Structure**: Constants, utilities, and clean architecture
+- **Touch-Optimized**: Smooth interactions on all touch devices
 
 ### 🧠 **Smart Game Mechanics**
+- **Dynamic Grid System**: Choose from 2×2, 3×3, 3×4, 4×3, 4×4, 5×3 or auto-fit layouts
 - **Dynamic Scoring**: 1-4 points per match based on attempts (fewer attempts = higher score)
-- **Progressive Rounds**: 15 randomly selected items per round for optimal cognitive load
-- **Hint System**: Visual highlighting of correct matches when needed
-- **Reset Capability**: Start over anytime without losing your overall progress
+- **Progressive Rounds**: Configurable rounds with different vocabulary sizes
+- **Smart Hints**: Visual highlighting shows correct pairs when you make mistakes
+- **Immediate Learning Feedback**: Wrong matches instantly reveal correct answers
+- **Font Size Control**: Adjustable text size with +/- buttons for accessibility
 
-### 📊 **Flexible Data Management**
-- **Built-in Vocabulary**: 15 diverse academic concepts ready to play
-- **CSV Upload**: Import your own vocabulary sets instantly
-- **Multiple Datasets**: Switch between different subject areas
-- **Smart Parsing**: Handles complex CSV formats with quoted fields and special characters
+### 📊 **Advanced Data Management**
+- **Auto-Discovery System**: Automatically finds all CSV files in data folder
+- **Dynamic Dataset Loading**: Just add CSV files and run update script
+- **Built-in Vocabularies**: Sample educational, general words, and language datasets
+- **CSV Upload**: Drag & drop your own vocabulary sets instantly
+- **Smart Data Validation**: Handles complex CSV formats with error checking
+- **Progress Visualization**: Interactive heatmap shows learning progress
 
 ### 🔊 **Multi-Sensory Feedback**
 - **Procedural Audio**: Generated success sounds using Web Audio API
@@ -95,14 +102,62 @@ This game is built on proven learning principles:
 - Run `python3 update_datasets.py` to refresh the list
 - Your new dataset will appear in the dropdown automatically!
 
-## 📁 Project Structure
+## 📱 Mobile Optimization Features
+
+### **Perfect Mobile Experience**
+- **Landscape Optimization**: Special layouts for phone landscape mode
+- **Touch-Friendly**: All buttons sized for finger tapping
+- **Viewport Optimized**: No zoom issues or horizontal scrolling
+- **Performance Tuned**: Smooth 60fps animations on mobile
+- **Battery Efficient**: Optimized CSS and JavaScript for mobile processors
+
+### **Cross-Device Compatibility**
+- 📱 **Smartphones**: iOS Safari, Android Chrome, Samsung Internet
+- 📱 **Tablets**: iPad, Android tablets, Windows tablets
+- 💻 **Desktops**: Chrome, Firefox, Safari, Edge
+- 🖥️ **Large Screens**: 4K monitors, ultrawide displays
+
+## 🌐 Deploy Online (GitHub Pages)
+
+### **Easy 5-Step Deployment**
+1. **Create GitHub Account** at [github.com](https://github.com)
+2. **Create Repository** named `vocabulary-game`
+3. **Upload Files**: Drag & drop all game files to repository
+4. **Enable Pages**: Go to Settings → Pages → Deploy from main branch
+5. **Share Link**: Your game will be live at `https://[username].github.io/vocabulary-game/`
+
+**Your game will work perfectly online with all features except the AI backend!**
+
+## 📁 Professional Project Structure
 
 ```
-🎯 Vocabulary-Matching-Game/
-├── 📄 index.html                      # Main game interface with modern HTML5
-├── 🎨 styles.css                      # Glassmorphism design system & animations
-├── 📚 architec.md                     # Detailed technical documentation
-├── 📖 README.md                       # This comprehensive guide
+🎯 vocabulary-game/
+├── 📄 index.html                      # Main game interface
+├── 📄 ARCHITECTURE.md                 # Professional architecture docs
+├── 📄 README.md                       # This comprehensive guide
+├── 📄 update_datasets.py              # Dataset management utility
+│
+├── 📂 css/                            # Modular CSS Architecture
+│   ├── 📄 main.css                    # CSS entry point
+│   ├── 📄 base.css                    # Foundation styles
+│   ├── 📄 header.css                  # Header & navigation
+│   ├── 📄 game-area.css               # Game layout & panels
+│   ├── 📄 game-items.css              # Items & interactions
+│   ├── 📄 controls.css                # Buttons & controls
+│   ├── 📄 animations.css              # Effects & animations
+│   ├── 📄 responsive.css              # Tablet & mobile
+│   └── 📄 mobile-landscape.css        # Mobile landscape
+│
+├── 📂 js/                             # Professional JavaScript
+│   ├── 📄 constants.js                # Game configuration
+│   ├── 📄 utils.js                    # Utility functions
+│   ├── 📄 main.js                     # Main controller
+│   ├── 📄 game-engine.js              # Game logic
+│   ├── 📄 ui-manager.js               # UI management
+│   ├── 📄 data-manager.js             # Data handling
+│   ├── 📄 audio-manager.js            # Sound effects
+│   ├── 📄 adaptive-learning-client.js # AI communication
+│   └── 📄 heatmap-visualizer.js       # Progress visualization
 ├── 📊 sample_vocabulary.json          # Example vocabulary data
 ├── 🐍 csv_processor.py                # Data processing utility
 ├── 🧠 adaptive_learning_engine.py     # FSRS-based spaced repetition engine

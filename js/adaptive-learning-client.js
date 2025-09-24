@@ -176,7 +176,7 @@ class AdaptiveLearningClient {
 
     async getWordStates() {
         if (this.fallbackMode) {
-            return { words: [] };
+            return this.getFallbackWordStates();
         }
 
         try {
@@ -189,7 +189,7 @@ class AdaptiveLearningClient {
             return await response.json();
         } catch (error) {
             console.error('Failed to get word states:', error);
-            return { words: [] };
+            return this.getFallbackWordStates();
         }
     }
 
@@ -241,6 +241,46 @@ class AdaptiveLearningClient {
         };
     }
 
+    getFallbackWordStates() {
+        const localStats = this.getLocalStats();
+        const wordData = localStats.wordData || {};
+        const storedVocab = this.getStoredVocabulary();
+
+        console.log('🔍 Heatmap Debug - Local Stats:', localStats);
+        console.log('🔍 Heatmap Debug - Word Data Keys:', Object.keys(wordData));
+        console.log('🔍 Heatmap Debug - Stored Vocab Count:', storedVocab.length);
+
+        return {
+            words: storedVocab.map(item => {
+                const data = wordData[item.concept] || { total: 0, correct: 0, avgRt: 0 };
+                const accuracy = data.total > 0 ? (data.correct / data.total) : 0;
+
+                return {
+                    word_id: item.concept,
+                    concept: item.concept,
+                    definition: item.definition,
+                    attempts: data.total,
+                    correct_attempts: data.correct,
+                    accuracy: accuracy,
+                    average_response_time: data.avgRt,
+                    hints_used: data.hintsUsed || 0,
+                    difficulty: this.estimateDifficulty(accuracy, data.total),
+                    last_seen: data.lastSeen || null
+                };
+            })
+        };
+    }
+
+    estimateDifficulty(accuracy, attempts) {
+        if (attempts === 0) return 0.5; // Neutral difficulty for new words
+
+        if (accuracy > 0.9) return 0.2; // Easy - high accuracy
+        if (accuracy > 0.7) return 0.4; // Medium-easy
+        if (accuracy > 0.5) return 0.6; // Medium
+        if (accuracy > 0.3) return 0.8; // Hard
+        return 1.0; // Very hard - low accuracy
+    }
+
     recordLocalResponse(wordId, isCorrect, responseTimeMs, usedHint) {
         const stats = this.getLocalStats();
 
@@ -265,6 +305,7 @@ class AdaptiveLearningClient {
         wordData.correct += isCorrect ? 1 : 0;
         wordData.avgRt = (wordData.avgRt * (wordData.total - 1) + responseTimeMs) / wordData.total;
         wordData.hintsUsed += usedHint ? 1 : 0;
+        wordData.lastSeen = Date.now();
 
         this.saveLocalStats(stats);
     }

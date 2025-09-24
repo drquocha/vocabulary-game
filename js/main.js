@@ -127,6 +127,9 @@ class VocabularyGame {
             timestamp: Date.now()
         });
 
+        // Update heatmap if it's currently visible
+        this.updateHeatmapIfVisible();
+
         // Reset hint flag
         this.lastHintUsed = false;
 
@@ -314,6 +317,20 @@ class VocabularyGame {
             console.error('Failed to show heatmap:', error);
             this.uiManager.showFeedback('Unable to load progress data', 'error');
             setTimeout(() => this.uiManager.hideFeedback(), 3000);
+        }
+    }
+
+    async updateHeatmapIfVisible() {
+        console.log('🔄 Update heatmap called, isVisible:', this.heatmapVisualizer.isVisible);
+        // Check if heatmap is currently visible
+        if (this.heatmapVisualizer.isVisible) {
+            try {
+                console.log('🔄 Refreshing heatmap with updated data...');
+                // Refresh the heatmap with updated data
+                await this.heatmapVisualizer.show(this.learningClient, this.dataManager);
+            } catch (error) {
+                console.warn('Failed to update heatmap:', error);
+            }
         }
     }
 }
