@@ -5,7 +5,7 @@
 /**
  * Response quality levels for FSRS algorithm
  */
-export const ResponseQuality = {
+const ResponseQuality = {
     FAIL: 0,        // Wrong answer
     HARD: 1,        // Correct but struggled (slow RT, used hints)
     GOOD: 2,        // Correct with normal effort
@@ -15,7 +15,7 @@ export const ResponseQuality = {
 /**
  * Word learning states
  */
-export const WordState = {
+const WordState = {
     NEW: 'new',
     LEARNING: 'learning',
     REVIEW: 'review'
@@ -24,7 +24,7 @@ export const WordState = {
 /**
  * FSRS Engine - Complete offline implementation of FSRS algorithm
  */
-export class FSRSEngine {
+class FSRSEngine {
     constructor() {
         // FSRS Parameters (scientifically optimized)
         this.fsrsParams = {

@@ -1,5 +1,3 @@
-import { FSRSEngine } from './fsrs-engine.js';
-
 class AdaptiveLearningClient {
     constructor(apiBaseUrl = 'http://localhost:8000/api') {
         this.apiBaseUrl = apiBaseUrl;

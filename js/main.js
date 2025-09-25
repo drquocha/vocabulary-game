@@ -1,18 +1,32 @@
 class VocabularyGame {
     constructor() {
-        this.audioManager = new AudioManager();
-        this.dataManager = new DataManager();
-        this.uiManager = new UIManager();
-        this.gameEngine = new GameEngine();
-        this.learningClient = new AdaptiveLearningClient();
-        this.heatmapVisualizer = new HeatmapVisualizer();
+        console.log('🎮 VocabularyGame constructor called');
+        try {
+            console.log('🔧 Initializing managers...');
+            this.audioManager = new AudioManager();
+            console.log('✅ AudioManager created');
+            this.dataManager = new DataManager();
+            console.log('✅ DataManager created');
+            this.uiManager = new UIManager();
+            console.log('✅ UIManager created');
+            this.gameEngine = new GameEngine();
+            console.log('✅ GameEngine created');
+            this.learningClient = new AdaptiveLearningClient();
+            console.log('✅ AdaptiveLearningClient created');
+            this.heatmapVisualizer = new HeatmapVisualizer();
+            console.log('✅ HeatmapVisualizer created');
 
-        // Session tracking
-        this.sessionStartTime = null;
-        this.sessionResponses = [];
+            // Session tracking
+            this.sessionStartTime = null;
+            this.sessionResponses = [];
 
-        this.bindEvents();
-        this.initializeGame();
+            console.log('🔗 Binding events...');
+            this.bindEvents();
+            console.log('🚀 Initializing game...');
+            this.initializeGame();
+        } catch (error) {
+            console.error('❌ Error in VocabularyGame constructor:', error);
+        }
     }
 
     bindEvents() {
@@ -34,19 +48,27 @@ class VocabularyGame {
     }
 
     async initializeGame() {
-        const datasets = await this.dataManager.loadAvailableDatasets();
-        this.uiManager.populateDatasetSelect(datasets);
+        console.log('🚀 Initializing game...');
+        try {
+            const datasets = await this.dataManager.loadAvailableDatasets();
+            console.log('📄 Loaded datasets:', datasets);
+            this.uiManager.populateDatasetSelect(datasets);
 
-        // Initialize adaptive learning with current vocabulary
-        await this.learningClient.initializeUser(this.dataManager.getData());
+            // Initialize adaptive learning with current vocabulary
+            console.log('🧠 Initializing adaptive learning...');
+            await this.learningClient.initializeUser(this.dataManager.getData());
 
-        // Store vocabulary for offline mode
-        this.learningClient.storeVocabulary(this.dataManager.getData());
+            // Store vocabulary for offline mode
+            this.learningClient.storeVocabulary(this.dataManager.getData());
 
-        // Initialize font size buttons
-        this.uiManager.initializeFontSizeButtons();
+            // Initialize font size buttons
+            this.uiManager.initializeFontSizeButtons();
 
-        this.startNewGame();
+            console.log('🎮 Starting new game...');
+            this.startNewGame();
+        } catch (error) {
+            console.error('❌ Error initializing game:', error);
+        }
     }
 
     async startNewGame() {

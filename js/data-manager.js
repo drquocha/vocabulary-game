@@ -26,16 +26,18 @@ class DataManager {
 
     async loadAvailableDatasets() {
         try {
+            console.log('📂 Loading available datasets from data/datasets.json...');
             // Load datasets from the auto-generated manifest
             const response = await fetch('data/datasets.json');
             if (response.ok) {
                 const manifest = await response.json();
+                console.log('✅ Successfully loaded datasets:', manifest);
                 return manifest.datasets || [];
             } else {
                 throw new Error('Failed to load datasets manifest');
             }
         } catch (error) {
-            console.log('Could not load dataset list from manifest, falling back to directory scan attempt');
+            console.log('⚠️ Could not load dataset list from manifest, falling back to directory scan attempt:', error);
 
             // Fallback: try to detect common CSV files
             const commonFiles = ['sample_vocabulary.csv', 'words.csv', 'pali.csv'];
