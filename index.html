@@ -82,13 +82,27 @@
 
     </div>
 
+    <script>
+        console.log('📜 Starting to load scripts...');
+        window.addEventListener('error', function(e) {
+            console.error('🚨 Script error:', e.error, e.filename, e.lineno);
+        });
+    </script>
     <script src="js/audio-manager.js"></script>
+    <script>console.log('✅ audio-manager.js loaded');</script>
     <script src="js/data-manager.js"></script>
+    <script>console.log('✅ data-manager.js loaded');</script>
     <script src="js/ui-manager.js"></script>
+    <script>console.log('✅ ui-manager.js loaded');</script>
     <script src="js/game-engine.js"></script>
+    <script>console.log('✅ game-engine.js loaded');</script>
     <script src="js/fsrs-engine.js"></script>
+    <script>console.log('✅ fsrs-engine.js loaded, FSRSEngine:', typeof FSRSEngine);</script>
     <script src="js/adaptive-learning-client.js"></script>
+    <script>console.log('✅ adaptive-learning-client.js loaded');</script>
     <script src="js/heatmap-visualizer.js"></script>
+    <script>console.log('✅ heatmap-visualizer.js loaded');</script>
     <script src="js/main.js"></script>
+    <script>console.log('✅ main.js loaded');</script>
 </body>
 </html>

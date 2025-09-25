@@ -83,13 +83,24 @@ class UIManager {
     }
 
     populateDatasetSelect(datasets) {
+        console.log('🎛️ Populating dataset select with:', datasets);
+        console.log('🎛️ datasetSelect element:', this.datasetSelect);
+
+        if (!this.datasetSelect) {
+            console.error('❌ datasetSelect element not found!');
+            return;
+        }
+
         this.datasetSelect.innerHTML = '<option value="">Select a dataset...</option>';
         datasets.forEach(dataset => {
             const option = document.createElement('option');
             option.value = dataset;
             option.textContent = dataset.replace('.csv', '').replace(/_/g, ' ');
             this.datasetSelect.appendChild(option);
+            console.log('➕ Added dataset option:', dataset);
         });
+
+        console.log('✅ Dataset select populated with', datasets.length, 'datasets');
     }
 
     enableLoadDatasetButton(enabled) {
