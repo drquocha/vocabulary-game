@@ -103,6 +103,8 @@ class HeatmapVisualizer {
         }));
 
         console.log('🗺️ Heatmap data prepared:', wordStatesArray.length, 'words');
+        console.log('📈 Sample converted word state:', wordStatesArray[0]);
+        console.log('📚 Vocabulary items:', currentVocab.length);
         this.renderHeatmap(wordStatesArray, currentVocab, analytics);
     }
 
@@ -140,8 +142,9 @@ class HeatmapVisualizer {
         // Process each word in vocabulary
         const processedWords = vocabulary.map(vocabWord => {
             const wordState = wordStateMap.get(vocabWord.concept);
+            console.log(`🔍 Processing word: ${vocabWord.concept}, found state:`, !!wordState, wordState?.repsTotal || 0);
 
-            if (!wordState || wordState.total_reviews === 0) {
+            if (!wordState || wordState.repsTotal === 0) {
                 return {
                     concept: vocabWord.concept,
                     definition: vocabWord.definition,
@@ -154,7 +157,7 @@ class HeatmapVisualizer {
                 };
             }
 
-            const accuracy = wordState.accuracy || 0;
+            const accuracy = wordState.repsTotal > 0 ? (wordState.repsCorrect / wordState.repsTotal) : 0;
             let category = 'new';
 
             if (accuracy > 0.8) category = 'mastered';
@@ -165,8 +168,8 @@ class HeatmapVisualizer {
                 concept: vocabWord.concept,
                 definition: vocabWord.definition,
                 accuracy: accuracy,
-                total_reviews: wordState.total_reviews || 0,
-                correct_reviews: wordState.correct_reviews || 0,
+                total_reviews: wordState.repsTotal || 0,
+                correct_reviews: wordState.repsCorrect || 0,
                 difficulty: wordState.difficulty || 0.5,
                 stability: wordState.stability || 1,
                 category: category

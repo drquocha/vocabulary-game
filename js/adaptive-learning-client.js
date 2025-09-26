@@ -46,8 +46,14 @@ class AdaptiveLearningClient {
 
     async recordResponse(wordId, isCorrect, responseTimeMs, usedHint = false) {
         // Always use FSRS for recording and updating word states
+        console.log('📝 Recording response for:', wordId, 'Correct:', isCorrect, 'Time:', responseTimeMs);
         const updatedWordState = this.fsrsEngine.updateWordState(wordId, isCorrect, responseTimeMs, usedHint);
-        console.log('🧠 FSRS Updated:', wordId, 'New Priority:', updatedWordState.priority.toFixed(2));
+        console.log('🧠 FSRS Updated:', wordId, {
+            priority: updatedWordState.priority.toFixed(2),
+            repsTotal: updatedWordState.repsTotal,
+            repsCorrect: updatedWordState.repsCorrect,
+            accuracy: updatedWordState.repsTotal > 0 ? (updatedWordState.repsCorrect / updatedWordState.repsTotal).toFixed(2) : 0
+        });
 
         return {
             status: 'success',
@@ -133,6 +139,8 @@ class AdaptiveLearningClient {
     // Get offline word states from FSRS engine
     getOfflineWordStates() {
         const wordStates = JSON.parse(localStorage.getItem('fsrs_word_states') || '{}');
+        console.log('🗂️ Retrieved word states from localStorage:', Object.keys(wordStates).length, 'words');
+        console.log('📊 Sample word states:', Object.entries(wordStates).slice(0, 2));
         return {
             status: 'success',
             word_states: wordStates,
