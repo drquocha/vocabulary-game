@@ -11,7 +11,10 @@
       "Bash(git push:*)",
       "Bash(git remote:*)",
       "Bash(git pull:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(open http://127.0.0.1:8080)",
+      "Bash(find:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []
