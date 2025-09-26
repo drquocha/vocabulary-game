@@ -102,9 +102,15 @@ class HeatmapVisualizer {
             lastReviewTime: state.lastReviewTime || 0
         }));
 
-        console.log('🗺️ Heatmap data prepared:', wordStatesArray.length, 'words');
-        console.log('📈 Sample converted word state:', wordStatesArray[0]);
-        console.log('📚 Vocabulary items:', currentVocab.length);
+        console.log('🗺️ Heatmap opening - Found stored data for', wordStatesArray.length, 'words');
+        console.log('📚 Checking', currentVocab.length, 'vocabulary items for progress');
+        if (wordStatesArray.length > 0) {
+            console.log('📈 Sample stored data:', {
+                concept: wordStatesArray[0].concept,
+                repsTotal: wordStatesArray[0].total_reviews,
+                accuracy: wordStatesArray[0].accuracy
+            });
+        }
         this.renderHeatmap(wordStatesArray, currentVocab, analytics);
     }
 
@@ -142,7 +148,6 @@ class HeatmapVisualizer {
         // Process each word in vocabulary
         const processedWords = vocabulary.map(vocabWord => {
             const wordState = wordStateMap.get(vocabWord.concept);
-            console.log(`🔍 Processing word: ${vocabWord.concept}, found state:`, !!wordState, wordState?.repsTotal || 0);
 
             if (!wordState || wordState.repsTotal === 0) {
                 return {
@@ -178,6 +183,14 @@ class HeatmapVisualizer {
 
         // Sort by accuracy (lowest first to prioritize struggling words)
         processedWords.sort((a, b) => a.accuracy - b.accuracy);
+
+        // Debug summary
+        const wordsWithData = processedWords.filter(w => w.total_reviews > 0);
+        console.log('📊 Heatmap processing summary:', {
+            totalWords: processedWords.length,
+            wordsWithProgress: wordsWithData.length,
+            sampleWordWithProgress: wordsWithData[0] || null
+        });
 
         // Create heatmap cells
         processedWords.forEach((word, index) => {

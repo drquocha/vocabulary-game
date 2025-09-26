@@ -138,12 +138,17 @@ class VocabularyGame {
 
         // Record response for adaptive learning
         const wordId = matchResult.conceptId;
+        console.log('🎯 About to record response:', { wordId, isMatch: matchResult.isMatch, responseTime });
         await this.learningClient.recordResponse(
             wordId,
             matchResult.isMatch,
             responseTime,
             this.lastHintUsed || false
         );
+
+        // Debug: Check localStorage immediately after recording
+        const currentStates = JSON.parse(localStorage.getItem('fsrs_word_states') || '{}');
+        console.log('💾 Current localStorage states:', Object.keys(currentStates), currentStates[wordId]);
 
         // Track for session analytics
         this.sessionResponses.push({
